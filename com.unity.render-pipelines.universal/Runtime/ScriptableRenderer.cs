@@ -124,12 +124,12 @@ namespace UnityEngine.Rendering.Universal
                 // we will also change it here to avoid breaking existing shaders. (case 1257518)
                 Matrix4x4 worldToCameraMatrix = Matrix4x4.Scale(new Vector3(1.0f, 1.0f, -1.0f)) * viewMatrix;
                 Matrix4x4 cameraToWorldMatrix = worldToCameraMatrix.inverse;
-                cmd.SetGlobalMatrix(ShaderPropertyId.worldToCameraMatrix, worldToCameraMatrix);
-                cmd.SetGlobalMatrix(ShaderPropertyId.cameraToWorldMatrix, cameraToWorldMatrix);
+                cmd.SetGlobalMatrix(URPShaderIDs.unity_WorldToCamera, worldToCameraMatrix);
+                cmd.SetGlobalMatrix(URPShaderIDs.unity_CameraToWorld, cameraToWorldMatrix);
 
-                cmd.SetGlobalMatrix(ShaderPropertyId.inverseViewMatrix, inverseViewMatrix);
-                cmd.SetGlobalMatrix(ShaderPropertyId.inverseProjectionMatrix, inverseProjectionMatrix);
-                cmd.SetGlobalMatrix(ShaderPropertyId.inverseViewAndProjectionMatrix, inverseViewProjection);
+                cmd.SetGlobalMatrix(URPShaderIDs.unity_MatrixInvV, inverseViewMatrix);
+                cmd.SetGlobalMatrix(URPShaderIDs.unity_MatrixInvP, inverseProjectionMatrix);
+                cmd.SetGlobalMatrix(URPShaderIDs.unity_MatrixInvVP, inverseViewProjection);
             }
 
             // TODO: Add SetPerCameraClippingPlaneProperties here once we are sure it correctly behaves in overlay camera for some time
@@ -201,16 +201,16 @@ namespace UnityEngine.Rendering.Universal
             bool invertProjectionMatrix = isOffscreen && SystemInfo.graphicsUVStartsAtTop;
             float projectionFlipSign = invertProjectionMatrix ? -1.0f : 1.0f;
             Vector4 projectionParams = new Vector4(projectionFlipSign, near, far, 1.0f * invFar);
-            cmd.SetGlobalVector(ShaderPropertyId.projectionParams, projectionParams);
+            cmd.SetGlobalVector(URPShaderIDs._ProjectionParams, projectionParams);
 
             Vector4 orthoParams = new Vector4(camera.orthographicSize * cameraData.aspectRatio, camera.orthographicSize, 0.0f, isOrthographic);
 
             // Camera and Screen variables as described in https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-            cmd.SetGlobalVector(ShaderPropertyId.worldSpaceCameraPos, cameraData.worldSpaceCameraPos);
-            cmd.SetGlobalVector(ShaderPropertyId.screenParams, new Vector4(cameraWidth, cameraHeight, 1.0f + 1.0f / cameraWidth, 1.0f + 1.0f / cameraHeight));
-            cmd.SetGlobalVector(ShaderPropertyId.scaledScreenParams, new Vector4(scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight));
-            cmd.SetGlobalVector(ShaderPropertyId.zBufferParams, zBufferParams);
-            cmd.SetGlobalVector(ShaderPropertyId.orthoParams, orthoParams);
+            cmd.SetGlobalVector(URPShaderIDs._WorldSpaceCameraPos, cameraData.worldSpaceCameraPos);
+            cmd.SetGlobalVector(URPShaderIDs._ScreenParams, new Vector4(cameraWidth, cameraHeight, 1.0f + 1.0f / cameraWidth, 1.0f + 1.0f / cameraHeight));
+            cmd.SetGlobalVector(URPShaderIDs._ScaledScreenParams, new Vector4(scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight));
+            cmd.SetGlobalVector(URPShaderIDs._ZBufferParams, zBufferParams);
+            cmd.SetGlobalVector(URPShaderIDs.unity_OrthoParams, orthoParams);
         }
 
         /// <summary>
@@ -230,9 +230,9 @@ namespace UnityEngine.Rendering.Universal
             float cameraXZAngle;
             CalculateBillboardProperties(worldToCameraMatrix, out billboardTangent, out billboardNormal, out cameraXZAngle);
 
-            cmd.SetGlobalVector(ShaderPropertyId.billboardNormal, new Vector4(billboardNormal.x, billboardNormal.y, billboardNormal.z, 0.0f));
-            cmd.SetGlobalVector(ShaderPropertyId.billboardTangent, new Vector4(billboardTangent.x, billboardTangent.y, billboardTangent.z, 0.0f));
-            cmd.SetGlobalVector(ShaderPropertyId.billboardCameraParams, new Vector4(cameraPos.x, cameraPos.y, cameraPos.z, cameraXZAngle));
+            cmd.SetGlobalVector(URPShaderIDs.unity_BillboardNormal, new Vector4(billboardNormal.x, billboardNormal.y, billboardNormal.z, 0.0f));
+            cmd.SetGlobalVector(URPShaderIDs.unity_BillboardTangent, new Vector4(billboardTangent.x, billboardTangent.y, billboardTangent.z, 0.0f));
+            cmd.SetGlobalVector(URPShaderIDs.unity_BillboardCameraParams, new Vector4(cameraPos.x, cameraPos.y, cameraPos.z, cameraXZAngle));
         }
 
         private static void CalculateBillboardProperties(
@@ -286,7 +286,7 @@ namespace UnityEngine.Rendering.Universal
             for (int i = 0; i < planes.Length; ++i)
                 cameraWorldClipPlanes[i] = new Vector4(planes[i].normal.x, planes[i].normal.y, planes[i].normal.z, planes[i].distance);
 
-            cmd.SetGlobalVectorArray(ShaderPropertyId.cameraWorldClipPlanes, cameraWorldClipPlanes);
+            cmd.SetGlobalVectorArray(URPShaderIDs.unity_CameraWorldClipPlanes, cameraWorldClipPlanes);
         }
 
         /// <summary>
@@ -309,11 +309,11 @@ namespace UnityEngine.Rendering.Universal
             Vector4 deltaTimeVector = new Vector4(deltaTime, 1f / deltaTime, smoothDeltaTime, 1f / smoothDeltaTime);
             Vector4 timeParametersVector = new Vector4(time, Mathf.Sin(time), Mathf.Cos(time), 0.0f);
 
-            cmd.SetGlobalVector(ShaderPropertyId.time, timeVector);
-            cmd.SetGlobalVector(ShaderPropertyId.sinTime, sinTimeVector);
-            cmd.SetGlobalVector(ShaderPropertyId.cosTime, cosTimeVector);
-            cmd.SetGlobalVector(ShaderPropertyId.deltaTime, deltaTimeVector);
-            cmd.SetGlobalVector(ShaderPropertyId.timeParameters, timeParametersVector);
+            cmd.SetGlobalVector(URPShaderIDs._Time, timeVector);
+            cmd.SetGlobalVector(URPShaderIDs._SinTime, sinTimeVector);
+            cmd.SetGlobalVector(URPShaderIDs._CosTime, cosTimeVector);
+            cmd.SetGlobalVector(URPShaderIDs.unity_DeltaTime, deltaTimeVector);
+            cmd.SetGlobalVector(URPShaderIDs._TimeParameters, timeParametersVector);
         }
 
         /// <summary>
