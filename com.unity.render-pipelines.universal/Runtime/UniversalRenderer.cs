@@ -493,7 +493,7 @@ namespace UnityEngine.Rendering.Universal
                 && createDepthTexture;
             if (requiresDepthCopyPass)
             {
-                m_CopyDepthPass.Setup(m_ActiveCameraDepthAttachment, m_DepthTexture, true);
+                m_CopyDepthPass.Setup(m_ActiveCameraDepthAttachment, Shader.PropertyToID(m_DepthTexture.name));
 
                 if (this.actualRenderingMode == RenderingMode.Deferred)
                     m_CopyDepthPass.AllocateRT = false; // m_DepthTexture is already allocated by m_GBufferCopyDepthPass.
@@ -590,7 +590,7 @@ namespace UnityEngine.Rendering.Universal
 
                 if (!depthTargetResolved && cameraData.xr.copyDepth)
                 {
-                    m_XRCopyDepthPass.Setup(m_ActiveCameraDepthAttachment, RTHandles.Alloc(cameraData.xr.renderTarget), false);
+                    m_XRCopyDepthPass.Setup(m_ActiveCameraDepthAttachment, cameraData);
                     EnqueuePass(m_XRCopyDepthPass);
                 }
 #endif
@@ -687,7 +687,7 @@ namespace UnityEngine.Rendering.Universal
             EnqueuePass(m_GBufferPass);
 
             //Must copy depth for deferred shading: TODO wait for API fix to bind depth texture as read-only resource.
-            m_GBufferCopyDepthPass.Setup(m_CameraDepthAttachment, m_DepthTexture, true);
+            m_GBufferCopyDepthPass.Setup(m_CameraDepthAttachment, m_DepthTexture);
             EnqueuePass(m_GBufferCopyDepthPass);
 
             // Note: DeferredRender.Setup is called by UniversalRenderPipeline.RenderSingleCamera (overrides ScriptableRenderer.Setup).
