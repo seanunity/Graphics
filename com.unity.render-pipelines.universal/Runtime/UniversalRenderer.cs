@@ -467,7 +467,7 @@ namespace UnityEngine.Rendering.Universal
 
             if (generateColorGradingLUT)
             {
-                colorGradingLutPass.Setup(colorGradingLut);
+                colorGradingLutPass.Setup(colorGradingLut.id);
                 EnqueuePass(colorGradingLutPass);
             }
 
@@ -598,8 +598,6 @@ namespace UnityEngine.Rendering.Universal
             // stay in RT so we resume rendering on stack after post-processing
             else if (applyPostProcessing)
             {
-                bool destinationIsInternalRT = afterPostProcessColor == RenderTargetHandle.CameraTarget ||
-                                               afterPostProcessColor.HasInternalRenderTargetId();
                 postProcessPass.Setup(cameraTargetDescriptor, m_ActiveCameraColorAttachment, afterPostProcessColor.id, m_ActiveCameraDepthAttachment, RTHandles.Alloc(colorGradingLut.Identifier()), false, false);
                 EnqueuePass(postProcessPass);
             }
