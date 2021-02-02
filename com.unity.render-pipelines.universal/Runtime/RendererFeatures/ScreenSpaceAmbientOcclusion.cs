@@ -127,6 +127,9 @@ namespace UnityEngine.Rendering.Universal
             private RenderTargetIdentifier m_SSAOTexture3Target = new RenderTargetIdentifier(URPShaderIDs._SSAO_OcclusionTexture[3], 0, CubemapFace.Unknown, -1);
             private RenderTextureDescriptor m_Descriptor;
             private ScreenSpaceAmbientOcclusionSettings m_CurrentSettings;
+            public RTHandle m_SSAOTexture1ID;
+            public RTHandle m_SSAOTexture2ID;
+            public RTHandle m_SSAOTexture3ID;
 
             // Constants
             private const string k_SSAOTextureName = "_ScreenSpaceOcclusionTexture";
@@ -144,6 +147,10 @@ namespace UnityEngine.Rendering.Universal
             internal ScreenSpaceAmbientOcclusionPass()
             {
                 m_CurrentSettings = new ScreenSpaceAmbientOcclusionSettings();
+
+                var m_SSAOTexture1ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[1], "_SSAO_OcclusionTexture1");
+                var m_SSAOTexture2ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[2], "_SSAO_OcclusionTexture2");
+                var m_SSAOTexture3ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[3], "_SSAO_OcclusionTexture3");
             }
 
             internal bool Setup(ScreenSpaceAmbientOcclusionSettings featureSettings, ScriptableRenderer renderer, Material material)
@@ -273,15 +280,15 @@ namespace UnityEngine.Rendering.Universal
                 m_Descriptor.width /= downsampleDivider;
                 m_Descriptor.height /= downsampleDivider;
                 m_Descriptor.colorFormat = RenderTextureFormat.ARGB32;
-                cmd.GetTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[1], m_Descriptor, FilterMode.Bilinear);
+                cmd.GetTemporaryRT(Shader.PropertyToID(m_SSAOTexture1ID.name), m_Descriptor, FilterMode.Bilinear);
 
                 m_Descriptor.width *= downsampleDivider;
                 m_Descriptor.height *= downsampleDivider;
-                cmd.GetTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[2], m_Descriptor, FilterMode.Bilinear);
-                cmd.GetTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[3], m_Descriptor, FilterMode.Bilinear);
+                cmd.GetTemporaryRT(Shader.PropertyToID(m_SSAOTexture2ID.name), m_Descriptor, FilterMode.Bilinear);
+                cmd.GetTemporaryRT(Shader.PropertyToID(m_SSAOTexture3ID.name), m_Descriptor, FilterMode.Bilinear);
 
                 // Configure targets and clear color
-                ConfigureTarget(m_CurrentSettings.AfterOpaque ? m_Renderer.cameraColorTarget : URPShaderIDs._SSAO_OcclusionTexture[2]);
+                ConfigureTarget(m_CurrentSettings.AfterOpaque ? m_Renderer.cameraColorTarget : m_SSAOTexture2ID);
                 ConfigureClear(ClearFlag.None, Color.white);
             }
 
@@ -364,9 +371,9 @@ namespace UnityEngine.Rendering.Universal
                     CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.ScreenSpaceOcclusion, false);
                 }
 
-                cmd.ReleaseTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[1]);
-                cmd.ReleaseTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[2]);
-                cmd.ReleaseTemporaryRT(URPShaderIDs._SSAO_OcclusionTexture[3]);
+                cmd.ReleaseTemporaryRT(Shader.PropertyToID(m_SSAOTexture1ID.name));
+                cmd.ReleaseTemporaryRT(Shader.PropertyToID(m_SSAOTexture2ID.name));
+                cmd.ReleaseTemporaryRT(Shader.PropertyToID(m_SSAOTexture3ID.name));
             }
         }
     }
