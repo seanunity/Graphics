@@ -122,9 +122,6 @@ namespace UnityEngine.Rendering.Universal
             private Matrix4x4[] m_CameraViewProjections = new Matrix4x4[2];
             private ProfilingSampler m_ProfilingSampler = ProfilingSampler.Get(URPProfileId.SSAO);
             private ScriptableRenderer m_Renderer = null;
-            private RenderTargetIdentifier m_SSAOTexture1Target = new RenderTargetIdentifier(URPShaderIDs._SSAO_OcclusionTexture[1], 0, CubemapFace.Unknown, -1);
-            private RenderTargetIdentifier m_SSAOTexture2Target = new RenderTargetIdentifier(URPShaderIDs._SSAO_OcclusionTexture[2], 0, CubemapFace.Unknown, -1);
-            private RenderTargetIdentifier m_SSAOTexture3Target = new RenderTargetIdentifier(URPShaderIDs._SSAO_OcclusionTexture[3], 0, CubemapFace.Unknown, -1);
             private RenderTextureDescriptor m_Descriptor;
             private ScreenSpaceAmbientOcclusionSettings m_CurrentSettings;
             public RTHandle m_SSAOTexture1ID;
@@ -148,9 +145,9 @@ namespace UnityEngine.Rendering.Universal
             {
                 m_CurrentSettings = new ScreenSpaceAmbientOcclusionSettings();
 
-                var m_SSAOTexture1ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[1], "_SSAO_OcclusionTexture1");
-                var m_SSAOTexture2ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[2], "_SSAO_OcclusionTexture2");
-                var m_SSAOTexture3ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[3], "_SSAO_OcclusionTexture3");
+                m_SSAOTexture1ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[1], "_SSAO_OcclusionTexture1");
+                m_SSAOTexture2ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[2], "_SSAO_OcclusionTexture2");
+                m_SSAOTexture3ID = RTHandles.Alloc(URPShaderIDs._SSAO_OcclusionTexture[3], "_SSAO_OcclusionTexture3");
             }
 
             internal bool Setup(ScreenSpaceAmbientOcclusionSettings featureSettings, ScriptableRenderer renderer, Material material)
@@ -310,16 +307,21 @@ namespace UnityEngine.Rendering.Universal
                     }
                     PostProcessUtils.SetSourceSize(cmd, m_Descriptor);
 
+
+                    var SSAOTexture1Target = new RenderTargetIdentifier(Shader.PropertyToID(m_SSAOTexture1ID.name), 0, CubemapFace.Unknown, -1);
+                    var SSAOTexture2Target = new RenderTargetIdentifier(Shader.PropertyToID(m_SSAOTexture2ID.name), 0, CubemapFace.Unknown, -1);
+                    var SSAOTexture3Target = new RenderTargetIdentifier(Shader.PropertyToID(m_SSAOTexture3ID.name), 0, CubemapFace.Unknown, -1);
+
                     // Execute the SSAO
-                    Render(cmd, m_SSAOTexture1Target, ShaderPasses.AO);
+                    Render(cmd, SSAOTexture1Target, ShaderPasses.AO);
 
                     // Execute the Blur Passes
-                    RenderAndSetBaseMap(cmd, m_SSAOTexture1Target, m_SSAOTexture2Target, ShaderPasses.BlurHorizontal);
-                    RenderAndSetBaseMap(cmd, m_SSAOTexture2Target, m_SSAOTexture3Target, ShaderPasses.BlurVertical);
-                    RenderAndSetBaseMap(cmd, m_SSAOTexture3Target, m_SSAOTexture2Target, ShaderPasses.BlurFinal);
+                    RenderAndSetBaseMap(cmd, SSAOTexture1Target, SSAOTexture2Target, ShaderPasses.BlurHorizontal);
+                    RenderAndSetBaseMap(cmd, SSAOTexture2Target, SSAOTexture3Target, ShaderPasses.BlurVertical);
+                    RenderAndSetBaseMap(cmd, SSAOTexture3Target, SSAOTexture2Target, ShaderPasses.BlurFinal);
 
                     // Set the global SSAO texture and AO Params
-                    cmd.SetGlobalTexture(k_SSAOTextureName, m_SSAOTexture2Target);
+                    cmd.SetGlobalTexture(k_SSAOTextureName, SSAOTexture2Target);
                     cmd.SetGlobalVector(k_SSAOAmbientOcclusionParamName, new Vector4(0f, 0f, 0f, m_CurrentSettings.DirectLightingStrength));
 
                     // If true, SSAO pass is inserted after opaque pass and is expected to modulate lighting result now.
