@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Support for the XboxSeries platform has been added.
+- Added SpeedTree8MaterialUpgrader for common SpeedTree8 code to support HD and Universal's ST8 shadergraphs
 
 ### Fixed
 - Fixed parameters order on inspectors for Volume Components without custom editor
