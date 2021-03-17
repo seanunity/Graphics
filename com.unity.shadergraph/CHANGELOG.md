@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Added ability to define custom vertex-to-fragment interpolators.
   - Stereo Eye Index, Instance ID, and Vertex ID nodes added to the shadergraph library.
   - Added View Vector Node doc
+  - Added subshadergraphs for LODCrossfade and SpeedTree8 wind, hue variation, and billboard.
 
 ### Changed
 - Updated/corrected View Direction doc
