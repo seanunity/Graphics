@@ -477,7 +477,7 @@ namespace UnityEditor.Rendering.HighDefinition
                 }
 
                 showUpsampleFilterAsFallback = serialized.renderPipelineSettings.dynamicResolutionSettings.enableDLSS.boolValue;
-                bool featureDetected = HDDynamicResolutionPlatformCapabilities.GetFlag(HDDynamicResolutionPlatformCapabilities.Flag.DLSSDetected);
+                bool featureDetected = HDDynamicResolutionPlatformCapabilities.DLSSDetected;
                 if (serialized.renderPipelineSettings.dynamicResolutionSettings.enableDLSS.boolValue)
                 {
                     EditorGUILayout.HelpBox(

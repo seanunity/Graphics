@@ -4,29 +4,19 @@ namespace UnityEngine.Rendering.HighDefinition
 {
     public static class HDDynamicResolutionPlatformCapabilities
     {
-        public enum Flag
-        {
-            DLSSDetected
-        }
+        /// <summary>
+        /// True if the render pipeline detected DLSS capable platform. False otherwise.
+        /// </summary>
+        public static bool DLSSDetected { get { return m_DLSSDetected; } }
 
-        public static bool GetFlag(Flag flag)
-        {
-            return (s_FeatureFlags & (1 << (int)flag)) != 0;
-        }
+        /// <summary>
+        /// User only variable, to control wether DLSS is on or off programmatically / from user code..
+        /// </summary>
+        public static bool DLSSEnabled { set { m_DLSSEnabled = value; } get { return m_DLSSEnabled && m_DLSSDetected; } }
 
-        #region private and internal state
+        private static bool m_DLSSDetected = false;
+        private static bool m_DLSSEnabled = true;
 
-        private static int s_FeatureFlags = 0;
-
-        internal static void SetFeatureFlag(Flag flag, bool state)
-        {
-            int mask = (1 << (int)flag);
-            if (state)
-                s_FeatureFlags |= mask;
-            else
-                s_FeatureFlags &= ~mask;
-        }
-
-        #endregion
+        internal static void ActivateDLSS() { m_DLSSDetected = true; }
     }
 }

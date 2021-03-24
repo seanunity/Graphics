@@ -535,8 +535,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
             if (DLSSPass.SetupFeature())
             {
-                HDDynamicResolutionPlatformCapabilities.SetFeatureFlag(
-                    HDDynamicResolutionPlatformCapabilities.Flag.DLSSDetected, true);
+                HDDynamicResolutionPlatformCapabilities.ActivateDLSS();
             }
         }
 
@@ -1122,7 +1121,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
                     dynResHandler.SetCurrentCameraRequest(cameraRequestedDynamicRes);
                     DynamicResolutionHandler.instance.allowDynamicResolutionOnAllPercentages = cameraRequestedDynamicRes
-                        && HDDynamicResolutionPlatformCapabilities.GetFlag(HDDynamicResolutionPlatformCapabilities.Flag.DLSSDetected)
+                        && HDDynamicResolutionPlatformCapabilities.DLSSEnabled
                         && m_Asset.currentPlatformRenderPipelineSettings.dynamicResolutionSettings.enableDLSS
                         && m_Asset.currentPlatformRenderPipelineSettings.dynamicResolutionSettings.enabled;
 
@@ -1994,7 +1993,7 @@ namespace UnityEngine.Rendering.HighDefinition
             currentFrameSettings.sssResolvedSampleBudget = currentFrameSettings.GetResolvedSssSampleBudget(m_Asset);
 
             bool DLSSEnabled = DynamicResolutionHandler.instance.DynamicResolutionEnabled()
-                && HDDynamicResolutionPlatformCapabilities.GetFlag(HDDynamicResolutionPlatformCapabilities.Flag.DLSSDetected)
+                && HDDynamicResolutionPlatformCapabilities.DLSSEnabled
                 && HDRenderPipeline.currentAsset.currentPlatformRenderPipelineSettings.dynamicResolutionSettings.enableDLSS;
 
             currentFrameSettings.SetEnabled(FrameSettingsField.Antialiasing, currentFrameSettings.IsEnabled(FrameSettingsField.Antialiasing) && !DLSSEnabled);

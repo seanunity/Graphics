@@ -52,7 +52,7 @@ namespace UnityEditor.Rendering.HighDefinition
                     if (isDLSSEnabled)
                     {
                         showAntialiasContentAsFallback = true;
-                        bool featureDetected = HDDynamicResolutionPlatformCapabilities.GetFlag(HDDynamicResolutionPlatformCapabilities.Flag.DLSSDetected);
+                        bool featureDetected = HDDynamicResolutionPlatformCapabilities.DLSSDetected;
 
                         //write here support string for dlss upscaler
                         EditorGUILayout.HelpBox(
