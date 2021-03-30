@@ -129,6 +129,8 @@ namespace UnityEngine.Rendering.HighDefinition
             isFirstFrame = true;
             cameraFrameCount = 0;
             resetPostProcessingHistory = true;
+            volumetricHistoryIsValid = false;
+            colorPyramidHistoryIsValid = false;
         }
 
         /// <summary>
@@ -221,6 +223,16 @@ namespace UnityEngine.Rendering.HighDefinition
                 return m_AdditionalCameraData != null
                     ? m_AdditionalCameraData.GetNonObliqueProjection(camera)
                     : GeometryUtils.CalculateProjectionMatrix(camera);
+            }
+        }
+
+        internal Matrix4x4 clusterDisplayParams
+        {
+            get
+            {
+                return m_AdditionalCameraData != null
+                    ? m_AdditionalCameraData.clusterDisplayParams
+                    : Matrix4x4.zero;
             }
         }
 
@@ -617,6 +629,7 @@ namespace UnityEngine.Rendering.HighDefinition
             cmd.SetGlobalVector(HDShaderIDs.unity_DeltaTime, new Vector4(dt, 1.0f / dt, sdt, 1.0f / sdt));
             cmd.SetGlobalVector(HDShaderIDs._TimeParameters, new Vector4(ct, Mathf.Sin(ct), Mathf.Cos(ct), 0.0f));
             cmd.SetGlobalVector(HDShaderIDs._LastTimeParameters, new Vector4(pt, Mathf.Sin(pt), Mathf.Cos(pt), 0.0f));
+            cmd.SetGlobalMatrix(HDShaderIDs._ClusterDisplayParams, clusterDisplayParams);
 
             float exposureMultiplierForProbes = 1.0f / Mathf.Max(probeRangeCompressionFactor, 1e-6f);
             cmd.SetGlobalFloat(HDShaderIDs._ProbeExposureScale, exposureMultiplierForProbes);

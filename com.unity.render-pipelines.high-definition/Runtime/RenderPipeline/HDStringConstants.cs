@@ -175,7 +175,7 @@ namespace UnityEngine.Rendering.HighDefinition
         public static readonly int g_vLayeredOffsetsBuffer = Shader.PropertyToID("g_vLayeredOffsetsBuffer");
 
         public static readonly int _LightListToClear = Shader.PropertyToID("_LightListToClear");
-        public static readonly int _LightListEntries = Shader.PropertyToID("_LightListEntries");
+        public static readonly int _LightListEntriesAndOffset = Shader.PropertyToID("_LightListEntriesAndOffset");
 
         public static readonly int _ViewTilesFlags = Shader.PropertyToID("_ViewTilesFlags");
         public static readonly int _MousePixelCoord = Shader.PropertyToID("_MousePixelCoord");
@@ -309,7 +309,8 @@ namespace UnityEngine.Rendering.HighDefinition
         public static readonly int _FrustumPlanes = Shader.PropertyToID("_FrustumPlanes");
         public static readonly int _TaaFrameInfo = Shader.PropertyToID("_TaaFrameInfo");
         public static readonly int _TaaJitterStrength = Shader.PropertyToID("_TaaJitterStrength");
-
+        public static readonly int _ClusterDisplayParams = Shader.PropertyToID("_ClusterDisplayParams");
+        
         public static readonly int _TransparentCameraOnlyMotionVectors = Shader.PropertyToID("_TransparentCameraOnlyMotionVectors ");
 
         public static readonly int _WorldSpaceCameraPos1 = Shader.PropertyToID("_WorldSpaceCameraPos1");
