@@ -360,6 +360,12 @@ namespace UnityEngine.Rendering.HighDefinition
         /// <summary>Enable to retain history buffers even if the camera is disabled.</summary>
         public bool hasPersistentHistory = false;
 
+        /// <summary>Screen size used when Screen Coords Override is active.</summary>
+        public Vector4 screenSizeOverride;
+
+        /// <summary>Transform used when Screen Coords Override is active.</summary>
+        public Vector4 screenCoordScaleBias;
+
         /// <summary>Allow NVIDIA Deep Learning Super Sampling (DLSS) on this camera.</summary>
         [Tooltip("Allow NVIDIA Deep Learning Super Sampling (DLSS) on this camera")]
         public bool allowDeepLearningSuperSampling = true;
@@ -619,6 +625,9 @@ namespace UnityEngine.Rendering.HighDefinition
             data.deepLearningSuperSamplingSharpening = deepLearningSuperSamplingSharpening;
 
             data.materialMipBias = materialMipBias;
+
+            data.screenSizeOverride = screenSizeOverride;
+            data.screenCoordScaleBias = screenCoordScaleBias;
 
             // We must not copy the following
             //data.m_IsDebugRegistered = m_IsDebugRegistered;
